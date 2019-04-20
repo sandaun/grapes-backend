@@ -11,6 +11,7 @@ const cors = require('cors');
 require('dotenv').config();
 
 const auth = require('./routes/auth');
+const wine = require('./routes/wine');
 
 mongoose
   .connect(process.env.MONGODB_URI, {
@@ -18,8 +19,9 @@ mongoose
     useNewUrlParser: true,
     reconnectTries: Number.MAX_VALUE,
   })
-  .then(() => {
-    console.log(`Connected to database`);
+  .then((connection) => {
+    console.log(`Connected to Mongo! Database name: "${connection.connections[0].name}"`);
+    // console.log(connection)
   })
   .catch(error => {
     console.error(error);
@@ -63,6 +65,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/auth', auth);
+app.use('/wine', wine);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

@@ -12,6 +12,11 @@ const {
   validationLoggin,
 } = require('../helpers/middlewares');
 
+// //Just for test purposes with the frontend
+// router.get('/test', (req, res) => {
+//   res.status(200).json({hola: 'hola', hello: 'this is a fuckin test'})
+// });
+
 router.get('/me', isLoggedIn(), (req, res, next) => {
   res.json(req.session.currentUser);
 });
