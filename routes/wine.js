@@ -16,8 +16,8 @@ const request = axios.create({
 // Get recipes
 router.get('/winelist', (req, res) => {
   const { wine } = req.query;
-  // console.log(req._parsedUrl.search);
-  request.get(`recommendation?wine=${wine}`)
+  // Number=20 it is another parameter from the external API to list 20 wines.
+  request.get(`recommendation?number=20&wine=${wine}`)
     .then((wines) => {
       res.send(wines.data)
     })
@@ -25,21 +25,5 @@ router.get('/winelist', (req, res) => {
       message: 'Request to Spoonacular failed/unauthorized'
     }));
 });
-
-// router.get('/findByIngredients', (req, res) => {
-//   request.get(`findByIngredients?fillIngredients=false&ingredients=${req.query.ingredients}&limitLicense=true&number=25&ranking=2`)
-//     .then(recipes => res.send(recipes.data))
-//     .catch(e => res.status(400).json({
-//       message: 'Request to Spoonacular failed/unauthorized'
-//     }));
-// });
-
-// router.get('/:id', (req, res) => {
-//   request.get(`${req.params.id}/information?includeNutrition=true`)
-//     .then(recipe => res.send(recipe.data))
-//     .catch(e => res.status(400).json({
-//       message: 'Request to Spoonacular failed/unauthorized'
-//     }));
-// });
 
 module.exports = router;
