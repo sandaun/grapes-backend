@@ -14,10 +14,10 @@ const request = axios.create({
 });
 
 // Get recipes
-router.get('/winelist', (req, res) => {
+router.get('/foodlist', (req, res) => {
   const { wine } = req.query;
-  // Number=20 it is another parameter from the external API to list 20 wines.
-  request.get(`recommendation?number=20&wine=${wine}`)
+  // Number=5 it is another parameter from the external API to list 5 wines.
+  request.get(`dishes?wine=${wine}`)
     .then((wines) => {
       res.send(wines.data)
     })
