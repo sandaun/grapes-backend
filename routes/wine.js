@@ -16,10 +16,20 @@ const request = axios.create({
 // Get recipes
 router.get('/foodlist', (req, res) => {
   const { wine } = req.query;
-  // Number=5 it is another parameter from the external API to list 5 wines.
   request.get(`dishes?wine=${wine}`)
-    .then((wines) => {
-      res.send(wines.data)
+    .then((food) => {
+      res.send(food.data)
+    })
+    .catch(e => res.status(400).json({
+      message: 'Request to Spoonacular failed/unauthorized'
+    }));
+});
+
+router.get('/winelist', (req, res) => {
+  const { food } = req.query;
+  request.get(`pairing?food=${food}`)
+    .then((wine) => {
+      res.send(wine.data)
     })
     .catch(e => res.status(400).json({
       message: 'Request to Spoonacular failed/unauthorized'
