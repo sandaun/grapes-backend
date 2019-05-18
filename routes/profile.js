@@ -21,16 +21,17 @@ router.get('/', (req, res, next) => {
 router.post('/update', isLoggedIn(), (req, res, next) => {
   const {
     username,
+    name,
     email
   } = req.body;
 
   const currentUser = req.session.currentUser._id;
   req.session.currentUser.username = username;
+  req.session.currentUser.name = name;
   req.session.currentUser.email = email;
 
-  User.findOneAndUpdate({ _id: currentUser }, { username, email }, { new: true })
+  User.findOneAndUpdate({ _id: currentUser }, { username, name, email }, { new: true })
     .then((user) => {
-      console.log('user desde back!')
       res.status(200);
       res.json(user);
     })
