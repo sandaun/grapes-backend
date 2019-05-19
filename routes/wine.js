@@ -40,8 +40,14 @@ router.get('/foodlist', async (req, res) => {
   for (let food of dataFoodToFront.pairedFoodwithWine) {
     await getImageFromFoodPaired.get(`search?number=10&query=${food}`)
       .then((menu) => {
-        const { image } = menu.data.menuItems[0];
-        dataFoodToFront.foodUrlArray.push(image)
+        // Control if the menuItems array exists or not and give th default food image URL to frontend
+        if (menu.data.menuItems.length == 0 || menu.data.menuItems === undefined) {
+          const image = '/images/food/foodDefault.jpg'
+          dataFoodToFront.foodUrlArray.push(image)          
+        } else {
+          const { image } = menu.data.menuItems[0];
+          dataFoodToFront.foodUrlArray.push(image)
+        }
       })
     }      
   res.send(dataFoodToFront);
