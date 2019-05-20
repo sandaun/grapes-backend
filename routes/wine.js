@@ -22,6 +22,10 @@ const getImageFromFoodPaired = axios.create({
   }
 });
 
+const getEdamam = axios.create({
+  baseURL: 'https://api.edamam.com/',
+});
+
 
 router.get('/foodlist', async (req, res) => {
   const { wine } = req.query;
@@ -37,33 +41,33 @@ router.get('/foodlist', async (req, res) => {
       message: 'Request to Spoonacular failed/unauthorized'
     }));
    
-  for (let food of dataFoodToFront.pairedFoodwithWine) {
-    await getImageFromFoodPaired.get(`search?number=10&query=${food}`)
-      .then((menu) => {
-        // Control if the menuItems array exists or not and give th default food image URL to frontend
-        if (menu.data.menuItems.length == 0 || menu.data.menuItems === undefined) {
-          const image = '/images/food/foodDefault.jpg'
-          dataFoodToFront.foodUrlArray.push(image)          
-        } else {
-          const { image } = menu.data.menuItems[0];
-          dataFoodToFront.foodUrlArray.push(image)
-        }
-      })
-    }      
+  // for (let food of dataFoodToFront.pairedFoodwithWine) {
+  //   await getEdamam.get(`search?q=${food}&app_id=${process.env.EDAMAM_ID}&app_key=${process.env.EDAMAM_KEY}`)
+  //     .then((menu) => {
+  //       // Control if the menuItems array exists or not and give th default food image URL to frontend
+  //       const {recipe: {image}} = menu.data.hits[0]
+  //       dataFoodToFront.foodUrlArray.push(image)
+  //     })
+  //     .catch(e => res.status(401).json({
+  //       message: 'Request to Edamam failed/unauthorized'
+  //     }));
+  //   }      
+    for (let food of dataFoodToFront.pairedFoodwithWine) {
+      await getImageFromFoodPaired.get(`search?number=10&query=${food}`)
+        .then((menu) => {
+          // Control if the menuItems array exists or not and give th default food image URL to frontend
+          if (menu.data.menuItems.length == 0 || menu.data.menuItems === undefined) {
+            const image = '/images/food/foodDefault.jpg'
+            dataFoodToFront.foodUrlArray.push(image)          
+          } else {
+            const { image } = menu.data.menuItems[0];
+            dataFoodToFront.foodUrlArray.push(image)
+          }
+        })
+      }   
   res.send(dataFoodToFront);
 });
 
-// // Get recipes
-// router.get('/foodlist', (req, res) => {
-//   const { wine } = req.query;
-//   request.get(`dishes?wine=${wine}`)
-//     .then((food) => {
-//       res.send(food.data)
-//     })
-//     .catch(e => res.status(400).json({
-//       message: 'Request to Spoonacular failed/unauthorized'
-//     }));
-// });
 
 router.get('/winelist', (req, res) => {
   const { food } = req.query;
