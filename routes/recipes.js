@@ -1,6 +1,5 @@
 const express = require('express');
 const axios = require('axios');
-// const createError = require('http-errors');
 
 const router = express.Router();
 
@@ -9,9 +8,6 @@ const User = require('../models/user');
 const {
   isLoggedIn,
 } = require('../helpers/middlewares');
-
-// const currentUser = req.session.currentUser._id;
-//   req.session.currentUser.favoriteRecipes = favoriteRecipes;
 
 const getFullRecipeSelected= axios.create({
   baseURL: 'https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/',
@@ -26,12 +22,24 @@ router.get('/recipelist', async (req, res) => {
   const { query } = req.query;
   await getFullRecipeSelected.get(`search?query=${query}&number=5`)
     .then((recipe) => {
-      console.log(recipe.data.baseUri)
       res.send(recipe.data)
     })
     .catch(e => res.status(400).json({
       message: 'Request to Spoonacular failed/unauthorized'
     }));
+});
+
+// GET RECIPE BY ID - TO BE IMPLEMENTED V2
+router.get('/recipelist/favorites', async (req, res) => {
+  const { query } = req.query;
+
+  await getFullRecipeSelected.get(`${query}/information`)
+    .then((recipe) => {
+      res.send(recipe.data)
+    })
+    .catch(e => res.status(400).json({
+      message: 'Request to Spoonacular failed/unauthorized'
+    }));   
 });
 
 
@@ -53,11 +61,9 @@ router.get('/favorite', isLoggedIn(), (req, res, next) => {
 router.put('/favorite/:id', isLoggedIn(),  (req, res, next) => {
   const userID = req.session.currentUser._id;
   const { id } = req.params;
-  console.log(id, 'this is favorites');
   User.findByIdAndUpdate( userID, 
     {$push:{ favoriteRecipes: id }}, {new:true})
     .then(recipesArray =>{
-    console.log('RECIPES UPDATED IN BBDD', recipesArray)
     res.json(recipesArray.favoriteRecipes)
     })
     .catch(err =>{
@@ -70,7 +76,6 @@ router.put('/favorite/:id', isLoggedIn(),  (req, res, next) => {
    try {
     const userID = req.session.currentUser;
     const { id } = req.params;
-    console.log('fav',req.session.currentUser.favoriteRecipes)
     let deleteFavorite = await User.findByIdAndUpdate( userID, { $pull: { favoriteRecipes: id}, new: true})
       res.json(deleteFavorite)
     }
