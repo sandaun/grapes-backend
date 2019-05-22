@@ -41,30 +41,33 @@ router.get('/foodlist', async (req, res) => {
       message: 'Request to Spoonacular failed/unauthorized'
     }));
    
-  // for (let food of dataFoodToFront.pairedFoodwithWine) {
-  //   await getEdamam.get(`search?q=${food}&app_id=${process.env.EDAMAM_ID}&app_key=${process.env.EDAMAM_KEY}`)
-  //     .then((menu) => {
-  //       // Control if the menuItems array exists or not and give th default food image URL to frontend
-  //       const {recipe: {image}} = menu.data.hits[0]
-  //       dataFoodToFront.foodUrlArray.push(image)
-  //     })
-  //     .catch(e => res.status(401).json({
-  //       message: 'Request to Edamam failed/unauthorized'
-  //     }));
-  //   }      
-    for (let food of dataFoodToFront.pairedFoodwithWine) {
-      await getImageFromFoodPaired.get(`search?number=10&query=${food}`)
-        .then((menu) => {
-          // Control if the menuItems array exists or not and give th default food image URL to frontend
-          if (menu.data.menuItems.length == 0 || menu.data.menuItems === undefined) {
-            const image = '/images/food/foodDefault.jpg'
-            dataFoodToFront.foodUrlArray.push(image)          
-          } else {
-            const { image } = menu.data.menuItems[0];
-            dataFoodToFront.foodUrlArray.push(image)
-          }
-        })
-      }   
+  for (let food of dataFoodToFront.pairedFoodwithWine) {
+    await getEdamam.get(`search?q=${food}&app_id=${process.env.EDAMAM_ID}&app_key=${process.env.EDAMAM_KEY}`)
+      .then((menu) => {
+        // Control if the menuItems array exists or not and give th default food image URL to frontend
+        const {recipe: {image}} = menu.data.hits[0]
+        dataFoodToFront.foodUrlArray.push(image)
+      })
+      .catch(e => res.status(401).json({
+        message: 'Request to Edamam failed/unauthorized'
+      }));
+    }      
+
+    // The next part is commented as it is the original API and to be used if the above fails.
+
+    // for (let food of dataFoodToFront.pairedFoodwithWine) {
+    //   await getImageFromFoodPaired.get(`search?number=10&query=${food}`)
+    //     .then((menu) => {
+    //       // Control if the menuItems array exists or not and give th default food image URL to frontend
+    //       if (menu.data.menuItems.length == 0 || menu.data.menuItems === undefined) {
+    //         const image = '/images/food/foodDefault.jpg'
+    //         dataFoodToFront.foodUrlArray.push(image)          
+    //       } else {
+    //         const { image } = menu.data.menuItems[0];
+    //         dataFoodToFront.foodUrlArray.push(image)
+    //       }
+    //     })
+    //   }   
   res.send(dataFoodToFront);
 });
 
