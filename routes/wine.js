@@ -34,7 +34,7 @@ router.get('/foodlist', async (req, res) => {
     foodUrlArray: [],
   };
   await getFoodByPairingWine
-    .get(`dishes?apiKey=89d2edec85fb4a5db2f20c60f72cff3b&wine=${wine}`)
+    .get(`dishes?apiKey=${process.env.SPOON}&wine=${wine}`)
     .then(food => {
       dataFoodToFront.pairedFoodwithWine = food.data.pairings;
     })
@@ -81,7 +81,7 @@ router.get('/foodlist', async (req, res) => {
 router.get('/winelist', (req, res) => {
   const { food } = req.query;
   getFoodByPairingWine
-    .get(`pairing?apiKey=89d2edec85fb4a5db2f20c60f72cff3b&food=${food}`)
+    .get(`pairing?apiKey=${process.env.SPOON}&food=${food}`)
     .then(wine => {
       res.send(wine.data);
     })

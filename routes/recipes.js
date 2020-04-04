@@ -19,7 +19,7 @@ const getFullRecipeSelected = axios.create({
 router.get('/recipelist', async (req, res) => {
   const { query } = req.query;
   await getFullRecipeSelected
-    .get(`search?apiKey=89d2edec85fb4a5db2f20c60f72cff3b&query=${query}`)
+    .get(`search?apiKey=${process.env.SPOON}&query=${query}`)
     .then(recipe => {
       res.send(recipe.data);
     })
