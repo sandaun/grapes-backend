@@ -14,13 +14,12 @@ const getFoodByPairingWine = axios.create({
 });
 
 const getImageFromFoodPaired = axios.create({
-  baseURL:
-    'https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/food/menuItems/',
-  headers: {
-    // 'Accept': 'application/json',
-    'X-RapidAPI-Host': 'spoonacular-recipe-food-nutrition-v1.p.rapidapi.com',
-    'X-RapidAPI-Key': process.env.SPOON || 'getyourownapikeyatmashape',
-  },
+  baseURL: 'https://api.spoonacular.com/food/menuItems/',
+  // headers: {
+  //   // 'Accept': 'application/json',
+  //   'X-RapidAPI-Host': 'spoonacular-recipe-food-nutrition-v1.p.rapidapi.com',
+  //   'X-RapidAPI-Key': process.env.SPOON || 'getyourownapikeyatmashape',
+  // },
 });
 
 const getEdamam = axios.create({
@@ -60,7 +59,7 @@ router.get('/foodlist', async (req, res) => {
 
   for (let food of dataFoodToFront.pairedFoodwithWine) {
     await getImageFromFoodPaired
-      .get(`search?number=10&query=${food}`)
+      .get(`search?apiKey=${process.env.SPOON}&number=5&query=${food}`)
       .then(menu => {
         // Control if the menuItems array exists or not and give th default food image URL to frontend
         if (
