@@ -4,9 +4,9 @@ const favicon = require('serve-favicon');
 const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
-const mongoose = require('mongoose');
+// const mongoose = require('mongoose');
 const session = require('express-session');
-const MongoStore = require('connect-mongo')(session);
+const MongoStore = require('connect-mongo');
 const cors = require('cors');
 require('dotenv').config();
 
@@ -15,19 +15,19 @@ const wine = require('./routes/wine');
 const profile = require('./routes/profile');
 const recipes = require('./routes/recipes');
 
-mongoose
-  .connect(process.env.MONGODB_URI, {
-    keepAlive: true,
-    useNewUrlParser: true,
-    reconnectTries: Number.MAX_VALUE,
-  })
-  .then((connection) => {
-    console.log(`Connected to Mongo! Database name: "${connection.connections[0].name}"`);
-    // console.log(connection)
-  })
-  .catch(error => {
-    console.error(error);
-  });
+// mongoose
+//   .connect(process.env.MONGODB_URI, {
+//     keepAlive: true,
+//     useNewUrlParser: true,
+//     reconnectTries: Number.MAX_VALUE,
+//   })
+//   .then((connection) => {
+//     console.log(`Connected to Mongo! Database name: "${connection.connections[0].name}"`);
+//     // console.log(connection)
+//   })
+//   .catch(error => {
+//     console.error(error);
+//   });
 
 const app = express();
 
@@ -47,8 +47,9 @@ app.use(
 
 app.use(
   session({
-    store: new MongoStore({
-      mongooseConnection: mongoose.connection,
+    store: MongoStore.create({
+      // mongooseConnection: mongoose.connection,
+      mongoUrl: process.env.MONGODB_URI,
       ttl: 24 * 60 * 60, // 1 day
     }),
     secret: process.env.SECRET_SESSION,
